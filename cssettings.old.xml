@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cssettings>
+<qlogin>
+    <cs>testcs</cs>
+    <uname>admin</uname>
+    <pwd>passsword</pwd>
+    <token>30.00</token>
+    <sh>localhost</sh>
+    <sc>admin</sc>  
+</qlogin>
+</cssettings>
