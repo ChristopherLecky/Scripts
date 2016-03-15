@@ -4,8 +4,11 @@ Add-Type -AssemblyName Microsoft.VisualBasic
 ############################## VARIABLES######################################
 $current_path = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xml_path = $current_path + "\cssettings.xml"
+$stdout = ""
+$stderr = ""
 
 #COMMSERVER LOGIN
+$SettingsFile
 $cssettings
 
 #SNMP
@@ -13,15 +16,16 @@ $snmphost = ""
 $snmpCommunity = ""
 
 ############################## FUNCTIONS#######################################
-function readsettings (){
-	$cssettings = @{
-		#Install information
-		base_folder    = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Base").dBASEHOME;
-		commserver = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Commserve").sCSCLIENTNAME;
-		#database information
-		dsn_name       = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Database").sCONNECTION;
-		dsn_dbname     = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Database").sCSDBNAME;
-		dsn_dbinstance = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Database").sINSTANCE;
+function readsettings ($xml_path){
+	$SettingsFile = [xml](Get-Content -Path $xml_path)
+	$cssettings = @{		
+		commserver = $SettingsFile.cssettings.qlogin.cs;
+		username = $SettingsFile.cssettings.qlogin.uname;
+		password = $SettingsFile.cssettings.qlogin.pwd;
+		tokenfile = $SettingsFile.cssettings.qlogin.token;
+		snmphost = $SettingsFile.cssettings.qlogin.sh;
+		snmpcommunity = $SettingsFile.cssettings.qlogin.sc;
+        base_folder = (Get-ItemProperty "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Base")
     }
 }
 function createsettings ($xml_path){
