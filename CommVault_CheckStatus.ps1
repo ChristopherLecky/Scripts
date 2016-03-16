@@ -4,8 +4,9 @@ Add-Type -AssemblyName Microsoft.VisualBasic
 ############################## VARIABLES######################################
 $current_path = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xml_path = $current_path + "\cssettings.xml"
+$cssettings
 
-$resultsDataTable = New-Object System.Data.DataTable
+$csDataTable = New-Object System.Data.DataTable
 [string]$csquery = $("SELECT * FROM [dbo].[CommCellJobController]")
 
 
@@ -14,7 +15,7 @@ $snmphost = ""
 $snmpCommunity = ""
 
 ############################## FUNCTIONS#######################################
-function readsettings (){
+function readsettings ($cssettings){
 	$cssettings = @{
 		#Install information
 		base_folder    = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Base").dBASEHOME;
@@ -24,6 +25,7 @@ function readsettings (){
 		dsn_dbname     = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Database").sCSDBNAME;
 		dsn_dbinstance = (Get-ItemProperty -Path "HKLM:\SOFTWARE\CommVault Systems\Galaxy\Instance001\Database").sINSTANCE;
     }
+return $cssettings	
 }
 function sendtrap($trapinfo){
 
@@ -51,8 +53,8 @@ function CSSqlQuery ($Server, $Database, $SQLQuery)
 
 
 ##############################SCRIPT BEGIN ####################################
-readsettings
-$resultsDataTable = CSSqlQuery $cssettings.sCONNECTION $cssettings.dsn_dbname $csquery
+$cssetings   = readsettings($cssettings)
+$csDataTable = CSSqlQuery $cssettings.sCONNECTION $cssettings.dsn_dbname $csquery
 
 #login to commserve run qlist and capture output
 csactivity
